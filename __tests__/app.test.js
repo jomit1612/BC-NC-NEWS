@@ -3,6 +3,8 @@ const db = require("../db/connection");
 const app = require("../app");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
+const topics = require("../db/data/test-data/topics");
+const { forEach } = require("../db/data/test-data/articles");
 
 beforeEach(() => seed(testData));
 
@@ -14,9 +16,15 @@ describe("GET /api/topics", () => {
       .get("/api/topics")
       .expect(200)
       .then(({ body }) => {
-        expect(body.topics[0]).toHaveProperty("slug");
-        expect(body.topics[0]).toHaveProperty("description");
+        console.log(body.topics);
+        body.topics.forEach((element) => {
+          expect(element).toHaveProperty("slug");
+        });
+        body.topics.forEach((element) => {
+          expect(element).toHaveProperty("description");
+        });
         expect(Array.isArray(body.topics)).toBe(true);
+        expect(body.topics.length).toBe(3);
       });
   });
   test("status 404, returns not found when passed a route that does not exist", () => {
