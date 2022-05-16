@@ -18,10 +18,10 @@ describe("GET /api/topics", () => {
       .then(({ body }) => {
         console.log(body.topics);
         body.topics.forEach((element) => {
-          expect(element).toHaveProperty("slug");
-        });
-        body.topics.forEach((element) => {
-          expect(element).toHaveProperty("description");
+          expect(element).toEqual({
+            slug: expect.any(String),
+            description: expect.any(String),
+          });
         });
         expect(Array.isArray(body.topics)).toBe(true);
         expect(body.topics.length).toBe(3);
