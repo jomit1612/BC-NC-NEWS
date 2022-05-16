@@ -17,8 +17,8 @@ describe("GET /api/topics", () => {
       .expect(200)
       .then(({ body }) => {
         console.log(body.topics);
-        body.topics.forEach((element) => {
-          expect(element).toEqual({
+        body.topics.forEach((topic) => {
+          expect(topic).toEqual({
             slug: expect.any(String),
             description: expect.any(String),
           });
