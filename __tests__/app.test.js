@@ -130,7 +130,11 @@ describe("GET /api/users", () => {
       .expect(200)
       .then(({ body }) => {
         body.users.forEach((user) => {
-          expect(user).toHaveProperty("username");
+          expect(user).toEqual({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
         });
         expect(body.users.length).toBe(4);
         expect(Array.isArray(body.users)).toBe(true);
