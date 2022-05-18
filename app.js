@@ -1,31 +1,27 @@
 const express = require("express");
 const { getTopics } = require("./controller/topics.controller");
-const { getArticleById } = require("./controller/articles.controller");
+const {
+  getArticleById,
+  patchArticle,
+} = require("./controller/articles.controller");
+const {
+  handleCustomErrors1,
+  hanlePsqlErrors,
+  handleCustomErrors2,
+  handleInternalServerErrors,
+} = require("./controller/errors.controllers");
 
 const app = express();
+app.use(express.json());
 
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
+app.patch("/api/articles/:articles_id", patchArticle);
 
-app.use("/*", (req, res, next) => {
-  res.status(404).send({ msg: "not found" });
-});
-app.use((err, req, res, next) => {
-  if (err.code === "22P02") {
-    res.status(400).send({ msg: "bad request" });
-  } else {
-    next(err);
-  }
-});
-app.use((err, req, res, next) => {
-  if (err.status && err.msg) {
-    res.status(404).send({ msg: "not found" });
-  } else {
-    next(err);
-  }
-});
+app.use(handleCustomErrors1);
+app.use(hanlePsqlErrors);
 
-app.use((err, req, res, next) => {
-  res.status(500).send({ msg: "server error" });
-});
+app.use(handleCustomErrors2);
+
+app.use(handleInternalServerErrors);
 module.exports = app;
