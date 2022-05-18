@@ -3,6 +3,7 @@ const db = require("../db/connection");
 const app = require("../app");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
+const { patch } = require("../app");
 
 beforeEach(() => seed(testData));
 
@@ -61,6 +62,43 @@ describe("GET /api/articles/:article_id", () => {
   test("status(400), returns bad request when passed an invalid id type", () => {
     return request(app)
       .get("/api/articles/blue")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("bad request");
+      });
+  });
+});
+describe("PATCH /api/articles/:article_id", () => {
+  test("status(200),updated object is returned", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 101 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 201,
+        });
+      });
+  });
+  test("status(400), returns bad request when passed a malformed or missing body", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: {} })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("bad request");
+      });
+  });
+  test("status(400),returns bad request when passes something that is not an integer", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: {} })
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("bad request");
