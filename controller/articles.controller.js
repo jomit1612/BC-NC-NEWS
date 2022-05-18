@@ -1,3 +1,4 @@
+const res = require("express/lib/response");
 const {
   fetchArticleById,
   updateArticle,
@@ -6,9 +7,11 @@ const {
 exports.getArticleById = (req, res, next) => {
   fetchArticleById(req.params.article_id)
     .then((article) => {
+      console.log(article);
       res.status(200).send({ article });
     })
     .catch((err) => {
+      console.log(err);
       next(err);
     });
 };
