@@ -3,7 +3,6 @@ const db = require("../db/connection");
 const app = require("../app");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
-const { patch } = require("../app");
 
 beforeEach(() => seed(testData));
 
@@ -75,15 +74,17 @@ describe("PATCH /api/articles/:article_id", () => {
       .send({ inc_votes: 101 })
       .expect(200)
       .then(({ body }) => {
-        expect(body.article).toEqual({
-          article_id: 1,
-          title: "Living in the shadow of a great man",
-          topic: "mitch",
-          author: "butter_bridge",
-          body: "I find this existence challenging",
-          created_at: "2020-07-09T20:11:00.000Z",
-          votes: 201,
-        });
+        expect(body.article).toEqual(
+          expect.objectContaining({
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: "2020-07-09T20:11:00.000Z",
+            votes: 201,
+          })
+        );
       });
   });
   test("status(400), returns bad request when passed a malformed or missing body", () => {
@@ -99,6 +100,22 @@ describe("PATCH /api/articles/:article_id", () => {
     return request(app)
       .patch("/api/articles/1")
       .send({ inc_votes: {} })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("bad request");
+      });
+  });
+  test("status(404),returns not found when passed a valid id that does not exist", () => {
+    return request(app)
+      .get("/api/articles/234234234")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("not found");
+      });
+  });
+  test("status(400),returns bad request when passed an invalid id type", () => {
+    return request(app)
+      .patch("/api/articles/green")
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("bad request");
