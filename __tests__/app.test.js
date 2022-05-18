@@ -140,12 +140,4 @@ describe("GET /api/users", () => {
         expect(Array.isArray(body.users)).toBe(true);
       });
   });
-  test("status 404, returns not found when passed a route that does not exist", () => {
-    return request(app)
-      .get("/notARoute")
-      .expect(404)
-      .then((res) => {
-        expect(res.body.msg).toBe("not found");
-      });
-  });
 });
