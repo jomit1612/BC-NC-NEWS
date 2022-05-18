@@ -107,7 +107,7 @@ describe("PATCH /api/articles/:article_id", () => {
   });
   test("status(404),returns not found when passed a valid id that does not exist", () => {
     return request(app)
-      .get("/api/articles/234234234")
+      .patch("/api/articles/234234234")
       .expect(404)
       .then((res) => {
         expect(res.body.msg).toBe("not found");
