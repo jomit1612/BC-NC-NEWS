@@ -122,3 +122,26 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("GET /api/users", () => {
+  test("status(200), returns an array of users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        body.users.forEach((user) => {
+          expect(user).toHaveProperty("username");
+        });
+        expect(body.users.length).toBe(4);
+        expect(Array.isArray(body.users)).toBe(true);
+      });
+  });
+  test("status 404, returns not found when passed a route that does not exist", () => {
+    return request(app)
+      .get("/notARoute")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("not found");
+      });
+  });
+});
