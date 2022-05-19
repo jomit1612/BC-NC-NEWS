@@ -125,6 +125,7 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
+
 describe("GET /api/articles/:article_id", () => {
   test("status(200),responds with matching article with comment count added", () => {
     return request(app)
@@ -141,6 +142,23 @@ describe("GET /api/articles/:article_id", () => {
           votes: 100,
           comment_count: 11,
         });
+
+describe("GET /api/users", () => {
+  test("status(200), returns an array of users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        body.users.forEach((user) => {
+          expect(user).toEqual({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+        expect(body.users.length).toBe(4);
+        expect(Array.isArray(body.users)).toBe(true);
+
       });
   });
 });
