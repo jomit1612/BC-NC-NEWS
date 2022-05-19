@@ -39,15 +39,17 @@ describe("GET /api/articles/:article_id", () => {
       .get(`/api/articles/1`)
       .expect(200)
       .then(({ body }) => {
-        expect(body.article).toEqual({
-          article_id: 1,
-          title: "Living in the shadow of a great man",
-          topic: "mitch",
-          author: "butter_bridge",
-          body: "I find this existence challenging",
-          created_at: "2020-07-09T20:11:00.000Z",
-          votes: 100,
-        });
+        expect(body.article).toEqual(
+          expect.objectContaining({
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: "2020-07-09T20:11:00.000Z",
+            votes: 100,
+          })
+        );
       });
   });
   test("status(404), returns not found when passed a valid id that does not exist", () => {
@@ -123,6 +125,24 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
+
+describe("GET /api/articles/:article_id", () => {
+  test("status(200),responds with matching article with comment count added", () => {
+    return request(app)
+      .get(`/api/articles/1`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 100,
+          comment_count: 11,
+        });
+
 describe("GET /api/users", () => {
   test("status(200), returns an array of users", () => {
     return request(app)
@@ -138,6 +158,7 @@ describe("GET /api/users", () => {
         });
         expect(body.users.length).toBe(4);
         expect(Array.isArray(body.users)).toBe(true);
+
       });
   });
 });
