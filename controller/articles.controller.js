@@ -3,6 +3,7 @@ const {
   fetchArticleById,
   updateArticle,
   fetchArticles,
+  fetchComments,
 } = require("../models/articles.models.js");
 
 exports.getArticleById = (req, res, next) => {
@@ -25,8 +26,23 @@ exports.patchArticle = (req, res, next) => {
       next(err);
     });
 };
-exports.getArticles = (req, res) => {
-  fetchArticles().then((articles) => {
-    res.status(200).send({ articles });
-  });
+exports.getArticles = (req, res, next) => {
+  fetchArticles()
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getComments = (req, res, next) => {
+  fetchComments(req.params.article_id)
+    .then((article) => {
+      res.status(200).send({ article });
+    })
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
 };

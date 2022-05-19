@@ -32,3 +32,13 @@ exports.fetchArticles = () => {
       return results.rows;
     });
 };
+exports.fetchComments = (id) => {
+  return db
+    .query("SELECT comments.* FROM comments WHERE comments.article_id=$1", [id])
+    .then((results) => {
+      if (results.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "not found" });
+      }
+      return results.rows;
+    });
+};
