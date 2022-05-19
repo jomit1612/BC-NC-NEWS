@@ -2,16 +2,15 @@ const res = require("express/lib/response");
 const {
   fetchArticleById,
   updateArticle,
+  fetchArticles,
 } = require("../models/articles.models.js");
 
 exports.getArticleById = (req, res, next) => {
   fetchArticleById(req.params.article_id)
     .then((article) => {
-      console.log(article);
       res.status(200).send({ article });
     })
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };
@@ -25,4 +24,9 @@ exports.patchArticle = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+exports.getArticles = (req, res) => {
+  fetchArticles().then((articles) => {
+    res.status(200).send({ articles });
+  });
 };

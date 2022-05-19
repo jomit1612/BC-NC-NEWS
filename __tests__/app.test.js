@@ -3,6 +3,7 @@ const db = require("../db/connection");
 const app = require("../app");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
+require("jest-sorted");
 
 beforeEach(() => seed(testData));
 
@@ -125,26 +126,29 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
-
 describe("GET /api/articles/:article_id", () => {
   test("status(200),responds with matching article with comment count added", () => {
     return request(app)
       .get(`/api/articles/1`)
       .expect(200)
       .then(({ body }) => {
-        expect(body.article).toEqual({
-          article_id: 1,
-          title: "Living in the shadow of a great man",
-          topic: "mitch",
-          author: "butter_bridge",
-          body: "I find this existence challenging",
-          created_at: "2020-07-09T20:11:00.000Z",
-          votes: 100,
-          comment_count: 11,
-        });
-
-describe("GET /api/users", () => {
-  test("status(200), returns an array of users", () => {
+        expect(body.article).toEqual(
+          expect.objectContaining({
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: "2020-07-09T20:11:00.000Z",
+            votes: 100,
+            comment_count: expect.any(Number),
+          })
+        );
+      });
+  });
+});
+describe("getAPI/users", () => {
+  test("satus (200) returns an array of user objects with the property username", () => {
     return request(app)
       .get("/api/users")
       .expect(200)
@@ -156,9 +160,34 @@ describe("GET /api/users", () => {
             avatar_url: expect.any(String),
           });
         });
-        expect(body.users.length).toBe(4);
         expect(Array.isArray(body.users)).toBe(true);
+        expect(body.users.length).toBe(4);
+      });
+  });
+});
 
+describe("GET api/articles,", () => {
+  test("Status (200) returns an array of article objects with comment count added and with the articles sorted in descending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        body.articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(Number),
+            })
+          );
+          expect(body.articles).toBeSortedBy("created_at", {
+            descending: true,
+          });
+        });
       });
   });
 });
