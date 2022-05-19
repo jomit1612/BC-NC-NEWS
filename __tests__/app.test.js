@@ -132,16 +132,18 @@ describe("GET /api/articles/:article_id", () => {
       .get(`/api/articles/1`)
       .expect(200)
       .then(({ body }) => {
-        expect(body.article).toEqual({
-          article_id: 1,
-          title: "Living in the shadow of a great man",
-          topic: "mitch",
-          author: "butter_bridge",
-          body: "I find this existence challenging",
-          created_at: "2020-07-09T20:11:00.000Z",
-          votes: 100,
-          comment_count: 11,
-        });
+        expect(body.article).toEqual(
+          expect.objectContaining({
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: "2020-07-09T20:11:00.000Z",
+            votes: 100,
+            comment_count: expect.any(Number),
+          })
+        );
       });
   });
 });
@@ -164,7 +166,7 @@ describe("getAPI/users", () => {
   });
 });
 
-describe.only("GET api/articles,", () => {
+describe("GET api/articles,", () => {
   test("Status (200) returns an array of article objects with comment count added and with the articles sorted in descending order", () => {
     return request(app)
       .get("/api/articles")
