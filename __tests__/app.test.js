@@ -278,4 +278,24 @@ describe("Post /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("bad request");
       });
   });
+  test("status(400) bad request when passed invalid username", () => {
+    const newComment = { username: 22, body: 55 };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test.only("status(400) bad request when empty body send", () => {
+    const newComment = { username: 22, body: "" };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
 });
