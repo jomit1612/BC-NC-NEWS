@@ -197,7 +197,7 @@ describe("GET api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments")
       .expect(200)
       .then(({ body }) => {
-        body.article.forEach((comment) => {
+        body.comments.forEach((comment) => {
           expect(comment).toEqual(
             expect.objectContaining({
               comment_id: expect.any(Number),
@@ -207,8 +207,8 @@ describe("GET api/articles/:article_id/comments", () => {
               body: expect.any(String),
             })
           );
+          expect(body.comments.length).toBe(11);
         });
-        console.log(body.article);
       });
   });
   test("status(404) returned not found when passed a valid id that does not exist", () => {
@@ -219,12 +219,20 @@ describe("GET api/articles/:article_id/comments", () => {
         expect(res.body.msg).toBe("not found");
       });
   });
-  test("status(404) returned bad request when passed an invalid id", () => {
+  test("status(400) returned bad request when passed an invalid id", () => {
     return request(app)
       .get("/api/articles/blue/comments")
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("bad request");
+      });
+  });
+  test("Status(200) returns an empty array when comments do not exist", () => {
+    return request(app)
+      .get("/api/articles/4/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
       });
   });
 });

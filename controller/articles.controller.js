@@ -4,6 +4,7 @@ const {
   updateArticle,
   fetchArticles,
   fetchComments,
+  checkIfArticleIdExists,
 } = require("../models/articles.models.js");
 
 exports.getArticleById = (req, res, next) => {
@@ -37,9 +38,13 @@ exports.getArticles = (req, res, next) => {
 };
 
 exports.getComments = (req, res, next) => {
-  fetchComments(req.params.article_id)
-    .then((article) => {
-      res.status(200).send({ article });
+  Promise.all([
+    checkIfArticleIdExists(req.params.article_id),
+    fetchComments(req.params.article_id),
+  ])
+    .then(([, comments]) => {
+      console.log(comments);
+      res.status(200).send({ comments });
     })
     .catch((err) => {
       console.log(err);
