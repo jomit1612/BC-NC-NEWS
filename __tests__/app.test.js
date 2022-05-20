@@ -236,3 +236,46 @@ describe("GET api/articles/:article_id/comments", () => {
       });
   });
 });
+describe("Post /api/articles/:article_id/comments", () => {
+  test("status(201),responds with posted comment", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "interesting stuff",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body.results).toEqual({
+          comment_id: 19,
+          body: "interesting stuff",
+          article_id: 1,
+          author: "icellusedkars",
+          votes: 0,
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("status(400) bad request when malformed body", () => {
+    const newComment = { body: "interesting stuff" };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("status(400) bad request when passed failing schema", () => {
+    const newComment = { body: 55 };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+});

@@ -5,6 +5,7 @@ const {
   fetchArticles,
   fetchComments,
   checkIfArticleIdExists,
+  addComment,
 } = require("../models/articles.models.js");
 
 exports.getArticleById = (req, res, next) => {
@@ -43,8 +44,18 @@ exports.getComments = (req, res, next) => {
     fetchComments(req.params.article_id),
   ])
     .then(([, comments]) => {
-      console.log(comments);
       res.status(200).send({ comments });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+exports.postComment = (req, res, next) => {
+  console.log(req.body);
+  addComment(req.body, req.params.article_id)
+    .then((results) => {
+      console.log(results);
+      res.status(201).send({ results });
     })
     .catch((err) => {
       console.log(err);

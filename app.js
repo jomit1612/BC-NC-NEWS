@@ -5,6 +5,7 @@ const {
   patchArticle,
   getArticles,
   getComments,
+  postComment,
 } = require("./controller/articles.controller");
 const {
   handleCustomErrors1,
@@ -22,6 +23,7 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/users", getUsers);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id/comments", getComments);
+app.post("/api/articles/:article_id/comments", postComment);
 app.patch("/api/articles/:articles_id", patchArticle);
 
 app.use(handleCustomErrors1);
