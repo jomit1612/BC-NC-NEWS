@@ -191,3 +191,48 @@ describe("GET api/articles,", () => {
       });
   });
 });
+describe("GET api/articles/:article_id/comments", () => {
+  test("status(200) returns an array of comments", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        body.comments.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+            })
+          );
+          expect(body.comments.length).toBe(11);
+        });
+      });
+  });
+  test("status(404) returned not found when passed a valid id that does not exist", () => {
+    return request(app)
+      .get("/api/articles/222222/comments")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("not found");
+      });
+  });
+  test("status(400) returned bad request when passed an invalid id", () => {
+    return request(app)
+      .get("/api/articles/blue/comments")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("bad request");
+      });
+  });
+  test("Status(200) returns an empty array when comments do not exist", () => {
+    return request(app)
+      .get("/api/articles/4/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
+      });
+  });
+});

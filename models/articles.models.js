@@ -1,4 +1,15 @@
+const res = require("express/lib/response");
 const db = require("../db/connection");
+
+exports.checkIfArticleIdExists = (id) => {
+  return db
+    .query(`SELECT * FROM articles WHERE article_id=$1`, [id])
+    .then((results) => {
+      if (results.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "not found" });
+      }
+    });
+};
 
 exports.fetchArticleById = (id) => {
   return db
@@ -29,6 +40,15 @@ exports.fetchArticles = () => {
       `SELECT articles.author,articles.title,articles.article_id,articles.topic,articles.created_at,articles.votes,COUNT(comments.comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC`
     )
     .then((results) => {
+      return results.rows;
+    });
+};
+exports.fetchComments = (id) => {
+  console.log(id);
+  return db
+    .query("SELECT comments.* FROM comments WHERE comments.article_id=$1", [id])
+    .then((results) => {
+      console.log(results.rows);
       return results.rows;
     });
 };
