@@ -43,21 +43,3 @@ exports.fetchArticles = () => {
       return results.rows;
     });
 };
-exports.fetchComments = (id) => {
-  return db
-    .query("SELECT comments.* FROM comments WHERE comments.article_id=$1", [id])
-    .then((results) => {
-      return results.rows;
-    });
-};
-exports.addComment = (body, id) => {
-  console.log(body.body, body.username, id);
-  return db
-    .query(
-      "INSERT INTO comments(author,body,article_id)VALUES($1,$2,$3) RETURNING *",
-      [body.username, body.body, id]
-    )
-    .then((results) => {
-      return results.rows[0];
-    });
-};

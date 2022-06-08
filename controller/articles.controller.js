@@ -3,9 +3,6 @@ const {
   fetchArticleById,
   updateArticle,
   fetchArticles,
-  fetchComments,
-  checkIfArticleIdExists,
-  addComment,
 } = require("../models/articles.models.js");
 
 exports.getArticleById = (req, res, next) => {
@@ -34,31 +31,6 @@ exports.getArticles = (req, res, next) => {
       res.status(200).send({ articles });
     })
     .catch((err) => {
-      next(err);
-    });
-};
-
-exports.getComments = (req, res, next) => {
-  Promise.all([
-    checkIfArticleIdExists(req.params.article_id),
-    fetchComments(req.params.article_id),
-  ])
-    .then(([, comments]) => {
-      res.status(200).send({ comments });
-    })
-    .catch((err) => {
-      next(err);
-    });
-};
-exports.postComment = (req, res, next) => {
-  console.log(req.body);
-  addComment(req.body, req.params.article_id)
-    .then((results) => {
-      console.log(results);
-      res.status(201).send({ results });
-    })
-    .catch((err) => {
-      console.log(err);
       next(err);
     });
 };

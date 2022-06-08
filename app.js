@@ -4,8 +4,6 @@ const {
   getArticleById,
   patchArticle,
   getArticles,
-  getComments,
-  postComment,
 } = require("./controller/articles.controller");
 const {
   handleCustomErrors1,
@@ -14,6 +12,11 @@ const {
   handleInternalServerErrors,
 } = require("./controller/errors.controllers");
 const { getUsers } = require("./controller/users.controller");
+const {
+  getComments,
+  postComment,
+  deleteComment,
+} = require("./controller/comments.controller.js");
 
 const app = express();
 app.use(express.json());
@@ -25,6 +28,7 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id/comments", getComments);
 app.post("/api/articles/:article_id/comments", postComment);
 app.patch("/api/articles/:articles_id", patchArticle);
+app.delete("/api/articles/:article_id/comments/:comment_id", deleteComment);
 
 app.use(handleCustomErrors1);
 app.use(hanlePsqlErrors);
