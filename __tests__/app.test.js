@@ -236,3 +236,86 @@ describe("GET api/articles/:article_id/comments", () => {
       });
   });
 });
+describe("Post /api/articles/:article_id/comments", () => {
+  test("status(201),responds with posted comment", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "interesting stuff",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.results).toEqual({
+          comment_id: 19,
+          body: "interesting stuff",
+          article_id: 1,
+          author: "icellusedkars",
+          votes: 0,
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("status(400) bad request when malformed body", () => {
+    const newComment = { body: "interesting stuff" };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("status(400) bad request when passed failing schema", () => {
+    const newComment = { body: 55 };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("status(400) bad request when passed invalid username", () => {
+    const newComment = { username: 22, body: 55 };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+  test("status(400) bad request when empty body send", () => {
+    const newComment = { username: 22, body: "" };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+});
+describe("Delete /api/articles/:article_id/comments/:comment_id", () => {
+  test("status(204),responds with an empty response body", () => {
+    return request(app).delete("/api/articles/1/comments/1").expect(204);
+  });
+  test("status(400) bad request when given an invalid id", () => {
+    return request(app)
+      .delete("/api/articles/qwewqe/comments/aweaw")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("bad request");
+      });
+  });
+  // test("status(404 not found when resource does not exist", () => {
+  //   return request(app)
+  //     .delete("/api/articles/2/comments/435345345")
+  //     .expect(404)
+  //     .then((res) => {
+  //       expect(res.body.msg).toBe("not found");
+  //     });
+  // });
+});

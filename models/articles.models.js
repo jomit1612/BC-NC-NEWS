@@ -43,12 +43,3 @@ exports.fetchArticles = () => {
       return results.rows;
     });
 };
-exports.fetchComments = (id) => {
-  console.log(id);
-  return db
-    .query("SELECT comments.* FROM comments WHERE comments.article_id=$1", [id])
-    .then((results) => {
-      console.log(results.rows);
-      return results.rows;
-    });
-};
