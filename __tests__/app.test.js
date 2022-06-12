@@ -4,6 +4,7 @@ const app = require("../app");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
 require("jest-sorted");
+const endpoints = require("../endpoints.json");
 
 beforeEach(() => seed(testData));
 
@@ -317,6 +318,17 @@ describe("Delete /api/comments/:comment_id", () => {
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("bad request");
+      });
+  });
+});
+
+describe("GET /api", () => {
+  test("Status 200: returns a JSON object representing the endpoints", () => {
+    request(app)
+      .get("/api")
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toEqual(endpoints);
       });
   });
 });

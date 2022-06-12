@@ -17,6 +17,7 @@ const {
   postComment,
   deleteComment,
 } = require("./controller/comments.controller.js");
+const { getApi } = require("./controller/api.controller");
 
 const app = express();
 app.use(express.json());
@@ -26,6 +27,7 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/users", getUsers);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id/comments", getComments);
+app.get("/api", getApi);
 app.post("/api/articles/:article_id/comments", postComment);
 app.patch("/api/articles/:articles_id", patchArticle);
 app.delete("/api/comments/:comment_id", deleteComment);
