@@ -28,7 +28,7 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id/comments", getComments);
 app.post("/api/articles/:article_id/comments", postComment);
 app.patch("/api/articles/:articles_id", patchArticle);
-app.delete("/api/articles/:article_id/comments/:comment_id", deleteComment);
+app.delete("/api/comments/:comment_id", deleteComment);
 
 app.use(handleCustomErrors1);
 app.use(hanlePsqlErrors);

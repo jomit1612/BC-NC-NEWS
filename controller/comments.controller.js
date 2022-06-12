@@ -28,12 +28,11 @@ exports.postComment = (req, res, next) => {
 };
 
 exports.deleteComment = (req, res, next) => {
-  removeComment(req.params.comment_id, req.params.article_id)
+  removeComment(req.params.comment_id)
     .then(() => {
       res.status(204).send();
     })
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };

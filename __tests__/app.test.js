@@ -298,24 +298,25 @@ describe("Post /api/articles/:article_id/comments", () => {
       });
   });
 });
-describe("Delete /api/articles/:article_id/comments/:comment_id", () => {
-  test("status(204),responds with an empty response body", () => {
-    return request(app).delete("/api/articles/1/comments/1").expect(204);
+
+describe("Delete /api/comments/:comment_id", () => {
+  test("status(204), responds with an empty response body", () => {
+    return request(app).delete("/api/comments/1").expect(204);
   });
-  test("status(400) bad request when given an invalid id", () => {
+  test("404,not found when deleting something that does not exist", () => {
     return request(app)
-      .delete("/api/articles/qwewqe/comments/aweaw")
+      .delete("/api/comments/12323123")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("not found");
+      });
+  });
+  test("400, bad request when passed an invalid id type", () => {
+    return request(app)
+      .delete("/api/comments/notanid")
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("bad request");
       });
   });
-  // test("status(404 not found when resource does not exist", () => {
-  //   return request(app)
-  //     .delete("/api/articles/2/comments/435345345")
-  //     .expect(404)
-  //     .then((res) => {
-  //       expect(res.body.msg).toBe("not found");
-  //     });
-  // });
 });
